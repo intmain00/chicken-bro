@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chicken bro</title>
+
+  <style>
+    body {
+      margin: 0;
+      background: radial-gradient(circle at center, #fffde7, #ffe0f0);
+      overflow: hidden;
+      height: 100vh;
+      font-family: "Helvetica Neue", sans-serif;
+    }
+
+    #chicken {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      filter: drop-shadow(4px 4px 8px rgba(0,0,0,0.3));
+      image-rendering: pixelated;
+      z-index: 1;
+    }
+
+    #speech-bubble {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      min-width: 150px;
+      max-width: 500px;
+      padding: 20px;
+      background: white;
+      border-radius: 20px;
+      border: 4px solid black;
+      opacity: 0;
+      transform: translate(-50%, -100%);
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+      font-size: 32px;
+      font-family: "Courier New", monospace;
+      font-style: italic;
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(black, black, black, #FF0000);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    #speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -18px;
+      left: 155px;
+      border-width: 15px 5px 0;
+      border-style: solid;
+      border-color: black transparent transparent transparent;
+      transform: rotate(10deg);
+      filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));
+    }
+  </style>
+</head>
+<body>
+
+  <img id="chicken" src="https://piskel-imgstore-b.appspot.com/img/e0c8a4cc-55be-11f0-a154-853a134a5ece.gif" />
+
+  <div id="speech-bubble"></div>
+
+  <script>
+    const frames = [
+      "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAOBJREFUWEftl0sOgDAIRPX+h9Y0sQlpgBk+qS50ZRSZB0yrnsfLx/my/vEDdHXgUkZJ5aaCgE+muMylXVPTVAE8IQqiAsAIjBhXowown5cw1nn7CGR1CGCIq8V2dcDyKRzTDoBWD6zrHRXQZkIpjETlOMoAWeEJUfIApCffpG4eq52QnBQfYW4uDyAya8RjduEH2NGBtAfM/RsNfLmfWgXQvQGINEAHBFzOzFKDSZRu0M8wAPS2+gTS4hmTaV+/awMiRaV/TCxjhd8fIVpR6icAtBGG5p/xADLkNoDAPuSH3ntoOCExcaGSAAAAAElFTkSuQmCC",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAOBJREFUWEftl0sOgDAIRPX+h9Y0sQlpgBk+qS50ZRSZB0yrnsfLx/my/vEDdHXgUkZJ5aaCgE+muMylXVPTVAE8IQqiAsAIjBhXowown5cw1nn7CGR1CGCIq8V2dcDyKRzTDoBWD6zrHRXQZkIpjETlOMoAWeEJUfIApCffpG4eq52QnBQfYW4uDyAya8RjduEH2NGBtAfM/RsNfLmfWgXQvQGINEAHBFzOzFKDSZRu0M8wAPS2+gTS4hmTaV+/awMiRaV/TCxjhd8fIVpR6icAtBGG5p/xADLkNoDAPuSH3ntoOCExcaGSAAAAAElFTkSuQmCC",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAOBJREFUWEftl0sOgDAIRPX+h9Y0sQlpgBk+qS50ZRSZB0yrnsfLx/my/vEDdHXgUkZJ5aaCgE+muMylXVPTVAE8IQqiAsAIjBhXowown5cw1nn7CGR1CGCIq8V2dcDyKRzTDoBWD6zrHRXQZkIpjETlOMoAWeEJUfIApCffpG4eq52QnBQfYW4uDyAya8RjduEH2NGBtAfM/RsNfLmfWgXQvQGINEAHBFzOzFKDSZRu0M8wAPS2+gTS4hmTaV+/awMiRaV/TCxjhd8fIVpR6icAtBGG5p/xADLkNoDAPuSH3ntoOCExcaGSAAAAAElFTkSuQmCC",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAM5JREFUWEftlm0LgCAMhPX//+jCYCBr7m41Mci+RDBvj7cXqmXxUxfnLxtgO7AdyHLgUONM69KBzr6Q5KKlv91VkwVg6TQQqA8DiE0piay3HB/myQTQrFQpZgNAfRgQKMESB5DNsBGjDuh5b7f2NPp4M44FgEKgVEMnIgBs7IjFhGBFYS2JZm0hN51fATwuQYb9r5oQzToqv3uBSA+gmR9tQvccCyAdjCDCPyYRgB7Cs71p0n0TBbASW8k+AYDKdV1mpgOUfhYAlcyq33KAE2FDLyHTP3EeAAAAAElFTkSuQmCC",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAM5JREFUWEftlm0LgCAMhPX//+jCYCBr7m41Mci+RDBvj7cXqmXxUxfnLxtgO7AdyHLgUONM69KBzr6Q5KKlv91VkwVg6TQQqA8DiE0piay3HB/myQTQrFQpZgNAfRgQKMESB5DNsBGjDuh5b7f2NPp4M44FgEKgVEMnIgBs7IjFhGBFYS2JZm0hN51fATwuQYb9r5oQzToqv3uBSA+gmR9tQvccCyAdjCDCPyYRgB7Cs71p0n0TBbASW8k+AYDKdV1mpgOUfhYAlcyq33KAE2FDLyHTP3EeAAAAAElFTkSuQmCC",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAANlJREFUWEftlksOgDAIRO39D61pIkmDwAxY04V1Y4w4PL61HYuvttj/sQF2BnYGZmXgVONM69KGwb4Q56Kln8NVMwvA0ukgUB8aEJtSHFl3+dz1MxNAs1Kl+BoA6kODRAmWZAClGTZiNgN63nvUkcZob9qxAFAIlMrNRAaAtfVYTAhWFNaSaNZu8tD5FUC5BDPS/6oJ0ayj8ocBZHoAzby3CcPvWADpYASRXVT4vFZhWQ505GNQsHyZDJQOm3v23f+CKgCMbKAN13gFoPwDao1LBQCNXer9coALPxUsIQdxQhUAAAAASUVORK5CYII=",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAANlJREFUWEftlksOgDAIRO39D61pIkmDwAxY04V1Y4w4PL61HYuvttj/sQF2BnYGZmXgVONM69KGwb4Q56Kln8NVMwvA0ukgUB8aEJtSHFl3+dz1MxNAs1Kl+BoA6kODRAmWZAClGTZiNgN63nvUkcZob9qxAFAIlMrNRAaAtfVYTAhWFNaSaNZu8tD5FUC5BDPS/6oJ0ayj8ocBZHoAzby3CcPvWADpYASRXVT4vFZhWQ505GNQsHyZDJQOm3v23f+CKgCMbKAN13gFoPwDao1LBQCNXer9coALPxUsIQdxQhUAAAAASUVORK5CYII=",
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAANlJREFUWEftlksOgDAIRO39D61pIkmDwAxY04V1Y4w4PL61HYuvttj/sQF2BnYGZmXgVONM69KGwb4Q56Kln8NVMwvA0ukgUB8aEJtSHFl3+dz1MxNAs1Kl+BoA6kODRAmWZAClGTZiNgN63nvUkcZob9qxAFAIlMrNRAaAtfVYTAhWFNaSaNZu8tD5FUC5BDPS/6oJ0ayj8ocBZHoAzby3CcPvWADpYASRXVT4vFZhWQ505GNQsHyZDJQOm3v23f+CKgCMbKAN13gFoPwDao1LBQCNXer9coALPxUsIQdxQhUAAAAASUVORK5CYII="
+    ];
+
+    const chicken = document.getElementById('chicken');
+    const speechBubble = document.getElementById('speech-bubble');
+
+    const text = "I love you ❤️";
+    let currentLetter = 0;
+
+    let x = 0;
+    let speed = 5;
+    let targetX = (window.innerWidth / 2) - 40;
+
+    let currentFrame = 0;
+    setInterval(() => {
+      chicken.src = frames[currentFrame];
+      currentFrame = (currentFrame + 1) % frames.length;
+    }, 100);
+
+    function moveChicken() {
+      if (x < targetX) {
+        x += speed;
+        chicken.style.left = x + 'px';
+        requestAnimationFrame(moveChicken);
+      } else {
+        showSpeechBubble();
+      }
+    }
+
+    function showSpeechBubble() {
+      speechBubble.style.opacity = '1';
+      revealMessage();
+    }
+
+    function revealMessage() {
+      if (currentLetter < text.length) {
+        speechBubble.textContent += text[currentLetter];
+        currentLetter++;
+        setTimeout(revealMessage, 150);
+      }
+    }
+
+    moveChicken();
+  </script>
+</body>
+</html>
